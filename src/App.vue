@@ -1,28 +1,64 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div id="app" class="section" :class="{ 'active' : loading}">
+        <div class="container">
+            <SVGSymbols/>
+            <div class="section__title">
+                <div class="section__title-text">
+                    Популярные квартиры
+                </div>
+            </div>
+            <div class="section__body">
+                <Apartments :apartments="apartments" v-on:toggleFavourite="onToggleFavourite"/>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+    import {
+        mapActions,
+        mapState
+    } from 'vuex'
+    import SVGSymbols from './components/SVGSymbols.vue'
+    import Apartments from './components/Apartments.vue'
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+    export default {
+        name: 'App',
+        components: {
+            SVGSymbols,
+            Apartments
+        },
+
+        computed: {
+            ...mapState([
+                'loading',
+                'apartments',
+            ]),
+        },
+
+        methods: {
+            ...mapActions([
+                'getApartments',
+                'toggleFavourite'
+            ]),
+            onToggleFavourite: function (apartmentID) {
+                this.toggleFavourite(apartmentID)
+            }
+        },
+
+        created: function () {
+            this.getApartments()
+        },
+    }
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+    #app {
+        transition: opacity ease-in-out 300ms;
+    }
+
+    #app.active{
+        opacity: .6;
+        pointer-events: none;
+    }
 </style>
